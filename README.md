@@ -6,7 +6,7 @@ This is a working build with **draft** identity, prices, and policies. Replace t
 
 ## Run it locally
 
-You need Node.js 20 or newer.
+You need Node.js 26.
 
 ```bash
 npm install
@@ -34,7 +34,7 @@ npm run typecheck
 npm run build
 ```
 
-`npm run db:setup` creates the SQLite file, generates the Prisma client, and seeds lessons, 14 days of times, one paused day, and two sample bookings. Seeding again updates lesson copy and adds any missing times. It does not wipe bookings. It will not run when `NODE_ENV=production` unless you set `ALLOW_SEED=true`.
+`npm run db:setup` generates the Prisma client, creates the tables on Supabase, and seeds lessons, 14 days of times, one paused day, and two sample bookings. Seeding again updates lesson copy and adds any missing times. It does not wipe bookings. It will not run when `NODE_ENV=production` unless you set `ALLOW_SEED=true`.
 
 ## Environment
 
@@ -42,7 +42,8 @@ Copy `.env.example` to `.env`.
 
 | Variable | Purpose |
 | --- | --- |
-| `DATABASE_URL` | SQLite file, for example `file:./dev.db` |
+| `DATABASE_URL` | Supabase transaction pooler, port 6543, with `?pgbouncer=true` |
+| `DIRECT_URL` | Supabase session pooler, port 5432. Used by `prisma db push` |
 | `ADMIN_PASSWORD` | Desk password. No default in code. |
 | `ADMIN_SECRET` | Signs the desk cookie. Use a long random string. |
 | `NEXT_PUBLIC_SITE_URL` | Public URL, no trailing slash |
@@ -71,17 +72,16 @@ Times are South African Standard Time (UTC+2, no daylight saving). A slot’s ca
 
 Blocking a date, or closing one time, stops new bookings. It does not cancel people who already have a reference. Cancel those from the desk if the lesson is off.
 
-## Deploying to Vercel
+## Supabase and Vercel
 
-The app is a Next.js project and can be imported into Vercel. Set the environment variables there.
+The database is Supabase Postgres. Bookings are held in a transaction, so the site needs a real database. A SQLite file cannot do that on Vercel, which is why the live homepage was showing “Something went wrong”.
 
-SQLite will not keep bookings on Vercel. The filesystem is not a shared database. Before you deploy for real:
-
-1. Create a Postgres database (Supabase is the straightforward option).
-2. In `prisma/schema.prisma`, change `provider = "sqlite"` to `provider = "postgresql"`.
-3. Set `DATABASE_URL` to the Postgres connection string.
-4. Run `npx prisma db push` (or a migration) against that database, then seed if you want the lesson rows.
-5. Add the Resend and admin variables.
+1. In the Supabase project, open Connect and copy the two pooler strings.
+2. Put the port **6543** string in `DATABASE_URL` and add `?pgbouncer=true` if it is not already there.
+3. Put the port **5432** string in `DIRECT_URL`.
+4. Set both, plus `ADMIN_PASSWORD` and `ADMIN_SECRET`, in the Vercel project environment.
+5. From this folder, with those same values in `.env`, run `npm run db:setup`.
+6. Redeploy. Node is pinned to `26.x` so Vercel does not jump to a new major on its own.
 
 Do not commit `.env`.
 

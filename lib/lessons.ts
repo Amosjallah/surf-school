@@ -1,5 +1,23 @@
+import { lessonCatalog } from "@/lib/catalog";
 import { prisma } from "@/lib/db";
 import type { LessonView } from "@/lib/types";
+
+function lessonsFromCatalog(): LessonView[] {
+  return lessonCatalog.map((lesson) => ({
+    id: lesson.slug,
+    slug: lesson.slug,
+    name: lesson.name,
+    summary: lesson.summary,
+    description: lesson.description,
+    durationMins: lesson.durationMins,
+    priceCents: lesson.priceCents,
+    currency: lesson.currency,
+    maxGroupSize: lesson.maxGroupSize,
+    skillLevel: lesson.skillLevel,
+    exclusive: lesson.exclusive,
+    includes: [...lesson.includes],
+  }));
+}
 
 function toView(lesson: {
   id: string;
@@ -22,9 +40,14 @@ function toView(lesson: {
 }
 
 export async function getActiveLessons() {
-  const lessons = await prisma.lesson.findMany({
-    where: { active: true },
-    orderBy: { sortOrder: "asc" },
-  });
-  return lessons.map(toView);
+  try {
+    const lessons = await prisma.lesson.findMany({
+      where: { active: true },
+      orderBy: { sortOrder: "asc" },
+    });
+    return lessons.map(toView);
+  } catch (error) {
+    console.error("Could not read lessons from Supabase.", error);
+    return lessonsFromCatalog();
+  }
 }

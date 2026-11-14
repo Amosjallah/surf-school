@@ -2,11 +2,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// SQLite keeps local setup to one file. It will not persist on Vercel.
-// Switch provider to "postgresql" and point DATABASE_URL at Supabase before deploy.
+// Supabase Postgres. DATABASE_URL is the transaction pooler (port 6543).
+// DIRECT_URL is the session pooler (port 5432) used by prisma db push.
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Lesson {

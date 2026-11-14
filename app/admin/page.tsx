@@ -48,7 +48,23 @@ export default async function AdminPage({
     );
   }
 
-  const data = await getDesk();
+  let data;
+  try {
+    data = await getDesk();
+  } catch (error) {
+    console.error("Could not read the desk from Supabase.", error);
+    return (
+      <main id="content" className="py-16">
+        <Wrap>
+          <h1 className="text-5xl">Desk</h1>
+          <p className="measure mt-4">
+            The database is not connected, so bookings cannot be listed. Add the Supabase connection strings and reload.
+          </p>
+        </Wrap>
+      </main>
+    );
+  }
+
   return (
     <main id="content">
       <AdminDesk data={data} notice={params.notice} error={params.error} />
