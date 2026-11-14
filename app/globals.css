@@ -100,6 +100,12 @@ h3 {
   text-transform: none;
 }
 
+.club-page h1.hero-title {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+
 .club-page .club-title {
   font-weight: 800;
   letter-spacing: 0.08em;

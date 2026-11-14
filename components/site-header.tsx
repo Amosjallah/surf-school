@@ -3,15 +3,18 @@
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
-import { IconBag, IconClose, IconMenu, IconSearch, IconUser } from "@/components/club/icons";
-import { ClubLogo } from "@/components/club/logo";
+import { IconClose, IconMenu } from "@/components/club/icons";
 import { cx } from "@/lib/cx";
 
-const links = [
-  { href: "/#about", label: "About Us" },
-  { href: "/lessons", label: "Programs" },
-  { href: "/#training", label: "Blog" },
-  { href: "/#surfboards", label: "Shop" },
+const leftLinks = [
+  { href: "/about", label: "Schools" },
+  { href: "/lessons", label: "Lessons" },
+  { href: "/lessons", label: "Pricing" },
+];
+
+const rightLinks = [
+  { href: "/about", label: "Coaches" },
+  { href: "/contact", label: "Questions" },
 ];
 
 const themeEvent = "saltline-theme";
@@ -27,11 +30,24 @@ function themeSnapshot() {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
+function NavLink({ href, label, pathname, onClick }: { href: string; label: string; pathname: string; onClick?: () => void }) {
+  const current = pathname === href;
+  return (
+    <Link
+      href={href}
+      aria-current={current ? "page" : undefined}
+      onClick={onClick}
+      className={cx("text-sm font-medium text-white/90 hover:text-white", current && "text-white")}
+    >
+      {label}
+    </Link>
+  );
+}
+
 export function SiteHeader() {
   const pathname = usePathname();
   const home = pathname === "/";
   const [menuPath, setMenuPath] = useState<string | null>(null);
-  const [searchOpen, setSearchOpen] = useState(false);
   const open = menuPath === pathname;
   const theme = useSyncExternalStore(subscribeToTheme, themeSnapshot, () => null);
 
@@ -55,93 +71,54 @@ export function SiteHeader() {
     <header
       className={cx(
         "z-40 text-white",
-        home ? "absolute inset-x-0 top-0" : "sticky top-0 bg-[#0c3d48]",
-        open && "bg-[#0c3d48]",
+        home ? "absolute inset-x-0 top-0" : "sticky top-0 bg-[#102f36]",
+        open && "bg-[#102f36]",
       )}
     >
-      <div className="mx-auto flex h-[76px] w-full max-w-[1120px] items-center gap-6 px-5 md:px-8">
-        <ClubLogo />
+      <div className="mx-auto grid h-[72px] w-full max-w-[1180px] grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8">
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Pages">
-          {links.map((link) => {
-            const current = link.href === pathname;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={current ? "page" : undefined}
-                className={cx("text-[15px] font-medium text-white/90 hover:text-white", current && "text-white underline underline-offset-4")}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
+          {leftLinks.map((link) => (
+            <NavLink key={link.label} {...link} pathname={pathname} />
+          ))}
         </nav>
-        <div className="ml-auto flex items-center gap-1 sm:gap-2">
-          <button
-            type="button"
-            className="grid size-11 place-items-center"
-            aria-expanded={searchOpen}
-            aria-controls="site-search"
-            aria-label={searchOpen ? "Close search" : "Search"}
-            onClick={() => setSearchOpen((value) => !value)}
+        <button
+          type="button"
+          className="grid size-11 place-items-center justify-self-start lg:hidden"
+          aria-expanded={open}
+          aria-controls="site-menu"
+          aria-label={open ? "Close menu" : "Open menu"}
+          onClick={() => setMenuPath(open ? null : pathname)}
+        >
+          {open ? <IconClose className="size-5" /> : <IconMenu className="size-5" />}
+        </button>
+        <Link href="/" className="text-[13px] font-semibold tracking-[0.42em] text-white" aria-label="Saltline, home">
+          SALTLINE
+        </Link>
+        <div className="flex items-center justify-end gap-7">
+          <nav className="hidden items-center gap-7 lg:flex" aria-label="More pages">
+            {rightLinks.map((link) => (
+              <NavLink key={link.label} {...link} pathname={pathname} />
+            ))}
+          </nav>
+          <Link
+            href="/book"
+            className="inline-flex h-9 items-center rounded-full bg-[#f0c014] px-4 text-sm font-semibold text-[#1c1604] hover:bg-[#ffd84a]"
           >
-            <IconSearch className="size-[18px]" />
-          </button>
-          <Link href="/book" className="grid size-11 place-items-center" aria-label="Book a lesson">
-            <IconUser className="size-[18px]" />
+            Book
           </Link>
-          <Link href="/lessons" className="grid size-11 place-items-center" aria-label="Lessons">
-            <IconBag className="size-[18px]" />
-          </Link>
-          <button
-            type="button"
-            className="grid size-11 place-items-center lg:hidden"
-            aria-expanded={open}
-            aria-controls="site-menu"
-            aria-label={open ? "Close menu" : "Open menu"}
-            onClick={() => setMenuPath(open ? null : pathname)}
-          >
-            {open ? <IconClose className="size-5" /> : <IconMenu className="size-5" />}
-          </button>
         </div>
       </div>
-      {searchOpen ? (
-        <form id="site-search" action="/lessons" className="border-t border-white/15 bg-[#0c3d48] px-5 py-3 md:px-8">
-          <div className="mx-auto flex w-full max-w-[1120px] gap-2">
-            <label htmlFor="site-search-input" className="sr-only">
-              Search lessons
-            </label>
-            <input
-              id="site-search-input"
-              name="q"
-              type="search"
-              placeholder="Search lessons"
-              className="h-11 min-w-0 flex-1 border border-white/30 bg-transparent px-3 text-sm text-white outline-none placeholder:text-white/50"
-            />
-            <button type="submit" className="h-11 bg-white px-4 text-[11px] font-bold tracking-[0.14em] text-[#0c3d48] uppercase">
-              Search
-            </button>
-          </div>
-        </form>
-      ) : null}
-      <nav id="site-menu" aria-label="Pages" hidden={!open} className="border-t border-white/15 bg-[#0c3d48] px-5 py-2 lg:hidden">
-        {links.map((link) => (
+      <nav id="site-menu" aria-label="Pages" hidden={!open} className="border-t border-white/15 bg-[#102f36] px-5 py-2 lg:hidden">
+        {[...leftLinks, ...rightLinks].map((link) => (
           <Link
-            key={link.href}
+            key={link.label}
             href={link.href}
-            aria-current={pathname === link.href ? "page" : undefined}
             className="flex min-h-11 items-center text-base"
             onClick={() => setMenuPath(null)}
           >
             {link.label}
           </Link>
         ))}
-        <Link href="/book" className="flex min-h-11 items-center text-base" onClick={() => setMenuPath(null)}>
-          Book a lesson
-        </Link>
-        <Link href="/contact" className="flex min-h-11 items-center text-base" onClick={() => setMenuPath(null)}>
-          Contact
-        </Link>
         <button type="button" className="flex min-h-11 items-center text-base" onClick={toggleTheme}>
           {theme === "dark" ? "Light mode" : "Dark mode"}
         </button>
