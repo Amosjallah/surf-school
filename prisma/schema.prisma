@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// SQLite keeps local setup to one file. It will not persist on Vercel.
+// Switch provider to "postgresql" and point DATABASE_URL at Supabase before deploy.
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Lesson {
+  id           String    @id @default(cuid())
+  slug         String    @unique
+  name         String
+  summary      String
+  description  String
+  durationMins Int
+  priceCents   Int
+  currency     String
+  maxGroupSize Int
+  skillLevel   String
+  exclusive    Boolean   @default(false)
+  includes     String
+  sortOrder    Int
+  active       Boolean   @default(true)
+  bookings     Booking[]
+}
+
+model Slot {
+  id          String    @id @default(cuid())
+  date        String
+  startTime   String
+  capacity    Int
+  bookedCount Int       @default(0)
+  blocked     Boolean   @default(false)
+  bookings    Booking[]
+
+  @@unique([date, startTime])
+  @@index([date])
+}
+
+model BlockedDate {
+  date   String @id
+  reason String
+}
+
+model Booking {
+  id               String    @id @default(cuid())
+  reference        String    @unique
+  lessonId         String
+  lesson           Lesson    @relation(fields: [lessonId], references: [id])
+  slotId           String
+  slot             Slot      @relation(fields: [slotId], references: [id])
+  groupSize        Int
+  spotsHeld        Int
+  totalCents       Int
+  currency         String
+  name             String
+  phone            String
+  email            String
+  skillLevel       String
+  swimmingAbility  String
+  medicalNotes     String    @default("")
+  waiverAcceptedAt DateTime
+  status           String    @default("confirmed")
+  paymentStatus    String    @default("unpaid")
+  createdAt        DateTime  @default(now())
+  cancelledAt      DateTime?
+
+  @@index([slotId, status])
+}

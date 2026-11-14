@@ -1,0 +1,252 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --bg: #f3ede2;
+  --bg-raised: #e7f1ed;
+  --text: #142426;
+  --text-soft: #2c4541;
+  --line: #9c8b76;
+  --stroke: #5f736e;
+  --deep: #06262c;
+  --deep-text: #f4f1ea;
+  --deep-soft: #c9ddd8;
+  --wax: #e2b33c;
+  --wax-ink: #1a1408;
+  --wax-hover: #c99a22;
+  --danger: #8c1d1d;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #071c20;
+  --bg-raised: #0e2c32;
+  --text: #e8f3f0;
+  --text-soft: #c5deda;
+  --line: #3d6d76;
+  --stroke: #8eb8b1;
+  --deep: #04191d;
+  --deep-text: #f4f1ea;
+  --deep-soft: #c9ddd8;
+  --danger: #ffb4ae;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #071c20;
+    --bg-raised: #0e2c32;
+    --text: #e8f3f0;
+    --text-soft: #c5deda;
+    --line: #3d6d76;
+    --stroke: #8eb8b1;
+    --deep: #04191d;
+    --deep-text: #f4f1ea;
+    --deep-soft: #c9ddd8;
+    --danger: #ffb4ae;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-raised: var(--bg-raised);
+  --color-text: var(--text);
+  --color-soft: var(--text-soft);
+  --color-line: var(--line);
+  --color-stroke: var(--stroke);
+  --color-deep: var(--deep);
+  --color-deep-text: var(--deep-text);
+  --color-deep-soft: var(--deep-soft);
+  --color-wax: var(--wax);
+  --color-wax-ink: var(--wax-ink);
+  --color-wax-hover: var(--wax-hover);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-dm), sans-serif;
+  --font-display: var(--font-bricolage), sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-bricolage), sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.measure {
+  max-width: 65ch;
+}
+
+.skip {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 50;
+  background: var(--wax);
+  color: var(--wax-ink);
+  padding: 0.6rem 0.9rem;
+}
+
+.skip:focus {
+  top: 1rem;
+}
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--wax);
+  outline-offset: 3px;
+}
+
+:where(a, button).is-primary:focus-visible {
+  outline-color: var(--deep);
+}
+
+label:has(input:focus-visible) {
+  outline: 2px solid var(--wax);
+  outline-offset: 3px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 3rem;
+  border: 1px solid var(--stroke);
+  border-radius: 2px;
+  background: var(--bg);
+  color: var(--text);
+  padding: 0.65rem 0.75rem;
+  font: inherit;
+}
+
+.field textarea {
+  min-height: 7.5rem;
+  resize: vertical;
+}
+
+input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--wax);
+}
+
+.photo-needed {
+  background-color: var(--deep);
+  background-image: repeating-linear-gradient(
+    -14deg,
+    transparent,
+    transparent 22px,
+    color-mix(in srgb, var(--deep-text) 9%, transparent) 22px,
+    color-mix(in srgb, var(--deep-text) 9%, transparent) 23px
+  );
+}
+
+.hero-line {
+  display: block;
+  overflow: hidden;
+}
+
+.hero-line > span {
+  display: block;
+  animation: hero-rise 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero-line:nth-child(2) > span {
+  animation-delay: 90ms;
+}
+
+.hero-line:nth-child(3) > span {
+  animation-delay: 180ms;
+}
+
+@keyframes hero-rise {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.hero-scrim {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--deep) 94%, transparent) 0%,
+    color-mix(in srgb, var(--deep) 78%, transparent) 26%,
+    color-mix(in srgb, var(--deep) 28%, transparent) 52%,
+    transparent 74%
+  );
+}
+
+.wave-edge {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  z-index: 2;
+  height: 4.75rem;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--bg);
+}
+
+.wave-track {
+  display: flex;
+  width: 200%;
+  height: 100%;
+  animation: wave-drift 18s linear infinite;
+}
+
+.wave-track svg {
+  display: block;
+  width: 50%;
+  height: 100%;
+}
+
+@keyframes wave-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+[id] {
+  scroll-margin-top: 5rem;
+}
+
+::selection {
+  background: var(--wax);
+  color: var(--wax-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-line > span,
+  .wave-track {
+    animation: none !important;
+  }
+}
