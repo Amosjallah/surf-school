@@ -1,84 +1,45 @@
-import Link from "next/link";
-import { site, instagramUrl } from "@/lib/site";
-import { Wrap } from "@/components/section";
+import { NewsletterForm } from "@/components/club/newsletter";
+import { site } from "@/lib/site";
 
 export function SiteFooter() {
-  const instagram = instagramUrl();
   return (
-    <footer className="border-t border-line bg-deep text-deep-text">
-      <Wrap className="grid gap-10 py-12 md:grid-cols-4">
+    <footer className="bg-[#0c3d48] text-white">
+      <div className="mx-auto grid w-full max-w-[1120px] gap-10 px-5 py-12 md:grid-cols-3 md:gap-8 md:px-8 md:py-14">
         <div>
-          <p className="font-display text-3xl">Saltline</p>
-          <p className="mt-3 max-w-[28ch] text-deep-soft">
-            Surf lessons at {site.meetingPoint}, {site.town}.
-          </p>
+          <h2>Subscribe to our newsletter</h2>
+          <NewsletterForm />
         </div>
         <div>
-          <h2 className="text-lg">Hours</h2>
-          <dl className="mt-3 space-y-2 text-deep-soft">
-            {site.hours.map((row) => (
-              <div key={row.label}>
-                <dt className="text-deep-text">{row.label}</dt>
-                <dd>{row.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-        <div>
-          <h2 className="text-lg">Contact</h2>
-          <ul className="mt-3 space-y-2">
+          <h2>Get in touch</h2>
+          <ul className="mt-4 space-y-2 text-sm text-white/80">
             <li>
-              <a className="underline underline-offset-4" href={`tel:${site.phoneTel}`}>
+              <a className="hover:text-white hover:underline" href={`tel:${site.phoneTel}`}>
                 {site.phoneDisplay}
               </a>
             </li>
             <li>
-              <a className="underline underline-offset-4" href={`mailto:${site.email}`}>
+              <a className="hover:text-white hover:underline" href={`mailto:${site.email}`}>
                 {site.email}
               </a>
-            </li>
-            <li>
-              {instagram ? (
-                <a className="underline underline-offset-4" href={instagram} rel="noreferrer">
-                  Instagram
-                </a>
-              ) : (
-                <span className="text-deep-soft">Instagram handle not set</span>
-              )}
             </li>
           </ul>
         </div>
         <div>
-          <h2 className="text-lg">On this site</h2>
-          <ul className="mt-3 space-y-2">
-            <li>
-              <Link className="underline underline-offset-4" href="/lessons">
-                Lessons
-              </Link>
-            </li>
-            <li>
-              <Link className="underline underline-offset-4" href="/book">
-                Book a lesson
-              </Link>
-            </li>
-            <li>
-              <Link className="underline underline-offset-4" href="/about">
-                Safety
-              </Link>
-            </li>
-            <li>
-              <Link className="underline underline-offset-4" href="/contact">
-                Contact
-              </Link>
-            </li>
-          </ul>
+          <h2>Office location & hours</h2>
+          <address className="mt-4 text-sm leading-relaxed text-white/80 not-italic">
+            {site.streetAddress}
+            <br />
+            {site.beach}, {site.town}
+            <br />
+            {site.hours[0]?.value}
+          </address>
         </div>
-      </Wrap>
-      <Wrap className="border-t border-white/15 py-4 text-sm text-deep-soft">
-        <p>
-          {site.legalName} · {site.streetAddress}, {site.beach}, {site.town}, {site.country}
+      </div>
+      <div className="border-t border-white/10">
+        <p className="mx-auto w-full max-w-[1120px] px-5 py-4 text-xs text-white/50 md:px-8">
+          {site.legalName} · {site.town}, {site.country}
         </p>
-      </Wrap>
+      </div>
     </footer>
   );
 }

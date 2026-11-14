@@ -1,21 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import { LocalBusinessJsonLd } from "@/components/local-business";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { site } from "@/lib/site";
 import "./globals.css";
 
-const display = Bricolage_Grotesque({
+const sans = Montserrat({
   subsets: ["latin"],
-  variable: "--font-bricolage",
-  display: "swap",
-});
-
-const sans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-dm",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-montserrat",
   display: "swap",
 });
 
@@ -41,15 +35,15 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f3ede2" },
+    { media: "(prefers-color-scheme: light)", color: "#0c3d48" },
     { media: "(prefers-color-scheme: dark)", color: "#071c20" },
   ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`} suppressHydrationWarning>
-      <body className="min-h-full bg-bg font-sans text-text antialiased">
+    <html lang="en" className={sans.variable} suppressHydrationWarning>
+      <body className="relative min-h-full bg-bg font-sans text-text antialiased">
         <script dangerouslySetInnerHTML={{ __html: themeBoot }} />
         <a className="skip" href="#content">
           Skip to content
