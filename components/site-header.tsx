@@ -9,11 +9,11 @@ import { cx } from "@/lib/cx";
 const leftLinks = [
   { href: "/about", label: "Schools" },
   { href: "/lessons", label: "Lessons" },
-  { href: "/lessons", label: "Pricing" },
+  { href: "/pricing", label: "Pricing" },
 ];
 
 const rightLinks = [
-  { href: "/about", label: "Coaches" },
+  { href: "/coaches", label: "Coaches" },
   { href: "/contact", label: "Questions" },
 ];
 

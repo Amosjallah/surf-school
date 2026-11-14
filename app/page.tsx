@@ -1,7 +1,11 @@
 import { ClubAbout } from "@/components/club/about";
 import { ClubBoards } from "@/components/club/boards";
+import { ClubCoaches } from "@/components/club/coaches";
+import { ClubGallery } from "@/components/club/gallery";
 import { ClubHero } from "@/components/club/hero";
+import { ClubQuestions } from "@/components/club/questions";
 import { ClubSpots } from "@/components/club/spots";
+import { ClubSteps } from "@/components/club/steps";
 import { ClubTraining } from "@/components/club/training";
 import { pageMeta } from "@/lib/metadata";
 
@@ -19,6 +23,10 @@ export default function HomePage() {
       <ClubSpots />
       <ClubBoards />
       <ClubTraining />
+      <ClubSteps />
+      <ClubCoaches />
+      <ClubGallery />
+      <ClubQuestions />
     </main>
   );
 }
